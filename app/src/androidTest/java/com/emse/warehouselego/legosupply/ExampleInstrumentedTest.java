@@ -22,6 +22,5 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("com.emse.warehouselego.legosupply", appContext.getPackageName());
-        //test
     }
 }
