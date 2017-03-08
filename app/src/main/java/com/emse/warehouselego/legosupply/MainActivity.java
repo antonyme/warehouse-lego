@@ -17,8 +17,9 @@ public class MainActivity extends AppCompatActivity {
         boutonClient.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent pageclient = new Intent(MainActivity.this, ClientActivity.class);
-                startActivity(pageclient);
+                //Intent pageclient = new Intent(MainActivity.this, ClientActivity.class);
+                //startActivity(pageclient);
+                NFCUtil.processNfcIntent(getIntent());
             }
         });
     }
