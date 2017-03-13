@@ -20,8 +20,7 @@ public class AdapterClient extends RecyclerView.Adapter<ViewHolderClient> {
         this.list = list;
     }
 
-    //cette fonction permet de créer les viewHolder
-    //et par la même indiquer la vue à inflater (à partir des layout xml)
+
     @Override
     public ViewHolderClient onCreateViewHolder(ViewGroup viewGroup, int itemType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_cards,viewGroup,false);
@@ -29,7 +28,7 @@ public class AdapterClient extends RecyclerView.Adapter<ViewHolderClient> {
 
     }
 
-    //c'est ici que nous allons remplir notre cellule avec le texte/image de chaque MyObjects
+
     @Override
     public void onBindViewHolder(ViewHolderClient myViewHolder, int position) {
         ObjectClient myObject = list.get(position);
