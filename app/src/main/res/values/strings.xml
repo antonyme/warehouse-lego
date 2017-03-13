@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">LegoSupply</string>
+    
+    <string-array name="products_array">
+        <item>Bleu</item>
+        <item>Rouge</item>
+        <item>Jaune</item>
+        <item>Vert</item>
+        <item>Noir</item>
+        <item>Blanc</item>
+    </string-array>
 </resources>
