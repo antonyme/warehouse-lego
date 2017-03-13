@@ -11,4 +11,3 @@
 /captures
 .externalNativeBuild
 *.log
-node_modules/
