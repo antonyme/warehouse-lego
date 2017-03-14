@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.emse.warehouselego.legosupply.warehouse.WarehouseActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -13,13 +15,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button boutonClient = (Button) findViewById(R.id.boutonClient);
-        boutonClient.setOnClickListener(new View.OnClickListener(){
+        Button clientButton = (Button) findViewById(R.id.clientBtn);
+        clientButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //Intent pageclient = new Intent(MainActivity.this, ClientActivity.class);
-                //startActivity(pageclient);
-                NFCUtil.processNfcIntent(getIntent());
+                startActivity(new Intent(MainActivity.this, ClientActivity.class));
+            }
+        });
+        Button warehouseButton = (Button) findViewById(R.id.warehouseBtn);
+        warehouseButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, WarehouseActivity.class));
             }
         });
     }
