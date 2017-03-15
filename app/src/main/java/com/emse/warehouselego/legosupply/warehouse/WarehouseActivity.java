@@ -64,8 +64,8 @@ public class WarehouseActivity extends ListActivity {
                 String id = NFCUtil.bytesToHex(tag.getId());
                 String text = NFCUtil.readTag(rawMessages);
                 if(text != null) {
-                    Log.i("LegoSupply", "Read tag: (id:" + id + ", text:" + text + ")");
-//                    sendStockOut(new StockEntry(id, text));
+                    Log.i("LegoSupply", "Read tag: (id:" + id + ", text:" + text.substring(3) + ")");
+                    sendStockOut(new StockEntry(id, text.substring(3)));
 //                    Intent newIntent = new Intent(ACTION_TAG_DATA);
 //                    newIntent.putExtra("tagId", id);
 //                    newIntent.putExtra("tagText", text.substring(3));
