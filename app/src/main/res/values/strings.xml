@@ -10,4 +10,9 @@
         <item>Blanc</item>
     </string-array>
     <string name="title_activity_warehouse">WarehouseActivity</string>
+    <string name="empty_order_list">Pas de commande pour l\'instant…</string>
+    <string name="commande_list">Commande pour %1$s</string>
+    <string name="product_type">LEGO</string>
+    <string name="order_quantity">Nb: %1$d</string>
+    <string name="preview">Aperçu du produit</string>
 </resources>

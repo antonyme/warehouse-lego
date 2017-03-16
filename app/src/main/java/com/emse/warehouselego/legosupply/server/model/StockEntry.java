@@ -1,6 +1,14 @@
 package com.emse.warehouselego.legosupply.server.model;
 
 public class StockEntry {
+    @Override
+    public String toString() {
+        return "StockEntry{" +
+                "id='" + id + '\'' +
+                ", color='" + color + '\'' +
+                '}';
+    }
+
     private String id;
     private String color;
 

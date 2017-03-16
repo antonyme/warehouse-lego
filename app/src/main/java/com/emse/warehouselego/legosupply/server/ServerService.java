@@ -18,7 +18,7 @@ public interface ServerService {
     Call<List<ClientOrder>> clientOrders();
 
     @POST("stockOut")
-    Call<StockEntry> stockOut(@Body StockEntry stockEntry);
+    Call<Void> stockOut(@Body StockEntry stockEntry);
 
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://lego-server.herokuapp.com/")

@@ -11,8 +11,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.emse.warehouselego.legosupply.NFCUtil;
 import com.emse.warehouselego.legosupply.R;
@@ -23,6 +26,9 @@ import com.emse.warehouselego.legosupply.server.model.StockEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,23 +39,30 @@ public class WarehouseActivity extends ListActivity {
     public static final String ACTION_GET_ORDERS = "orders.get";
     public static final String ACTION_TAG_DATA = "tag.data";
     WarehouseAdapter adapter;
+    TextView headerTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("LegoSupply", "Hello");
+        Log.i("LegoSupply", "Hello Warehouse");
+        context = this;
+        //set view
         setContentView(R.layout.activity_warehouse);
+        ListView lv = getListView();
+        LayoutInflater inflater = getLayoutInflater();
+        View header = inflater.inflate(R.layout.wr_header, lv, false);
+        lv.addHeaderView(header, null, false);
+        headerTxt = (TextView) findViewById(R.id.headerTxt);
+        //set adapteur
         adapter = new WarehouseAdapter(this, new ArrayList<OrderItem>());
         setListAdapter(adapter);
-        context = this;
 
-        Button button = (Button) findViewById(R.id.fetchBtn);
-        button.setOnClickListener(new View.OnClickListener() {
+        // schedule a task to update order list
+        ScheduledExecutorService getOrderScheduler = Executors.newScheduledThreadPool(2);
+        getOrderScheduler.scheduleAtFixedRate(new Runnable() {
             @Override
-            public void onClick(View view) {
-                getOrders();
-            }
-        });
+            public void run() {getOrders();}
+        }, 0, 5, TimeUnit.SECONDS);
     }
 
     @Override
@@ -66,11 +79,6 @@ public class WarehouseActivity extends ListActivity {
                 if(text != null) {
                     Log.i("LegoSupply", "Read tag: (id:" + id + ", text:" + text.substring(3) + ")");
                     sendStockOut(new StockEntry(id, text.substring(3)));
-//                    Intent newIntent = new Intent(ACTION_TAG_DATA);
-//                    newIntent.putExtra("tagId", id);
-//                    newIntent.putExtra("tagText", text.substring(3));
-//                    LocalBroadcastManager.getInstance(context).sendBroadcast(newIntent);
-//                    Log.i("LegoSupply", "broadcast sent!");
                 }
             }
             else {
@@ -104,8 +112,15 @@ public class WarehouseActivity extends ListActivity {
             @Override
             public void onResponse(Call<List<ClientOrder>> call, Response<List<ClientOrder>> response) {
                 List<OrderItem> orders = new ArrayList<>();
-                if(response.isSuccessful() && response.body().size()>0) {
-                    orders = response.body().get(0).getToPrepare();
+                if(response.isSuccessful()) {
+                    if(response.body().size()>0) {
+                        orders = response.body().get(0).getToPrepare();
+                        headerTxt.setText(getResources().getString(R.string.commande_list,
+                                response.body().get(0).getClientName()));
+                    }
+                    else {
+                        headerTxt.setText(R.string.empty_order_list);
+                    }
                 }
 
                 Intent intent = new Intent(ACTION_GET_ORDERS);
@@ -115,24 +130,42 @@ public class WarehouseActivity extends ListActivity {
             }
             @Override
             public void onFailure(Call<List<ClientOrder>> call, Throwable t) {
-                Log.e("LegoSupply", t.getMessage());
+                Log.e("LegoSupply", "getOrders failed: " + t.getMessage());
             }
         });
     }
 
     private void sendStockOut(StockEntry stockEntry) {
         ServerService serverService = ServerService.retrofit.create(ServerService.class);
-        final Call<StockEntry> call = serverService.stockOut(stockEntry);
+        final Call<Void> call = serverService.stockOut(stockEntry);
+        Log.i("LegoSupply", "Send stockOut " + stockEntry.toString());
 
-        call.enqueue(new Callback<StockEntry>() {
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<StockEntry> call, Response<StockEntry> response) {
-                Log.i("LegoSupply", String.valueOf(response.code()));
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.i("LegoSupply", "stockOut -> " + String.valueOf(response.code()));
+                CharSequence text;
+                switch (response.code()) {
+                    case 200:
+                        text = "OK! Inventaire et commande mis à jour!";
+                        getOrders();
+                        break;
+                    case 201:
+                        text = "Ce LEGO n'est pas utile à la commande, repose le!";
+                        break;
+                    case 202:
+                        text = "Heu... Ce LEGO ne devrait pas être là, non?";
+                        break;
+                    default:
+                        text = "Oups, petit pb de connexion, réessaye";
+                }
+                Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+                toast.show();
             }
 
             @Override
-            public void onFailure(Call<StockEntry> call, Throwable t) {
-
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("LegoSupply", "sendStockOut failed: " + t.getMessage());
             }
         });
     }
@@ -141,18 +174,12 @@ public class WarehouseActivity extends ListActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i("LegoSupply", "In Broadcast receiver");
             if(intent.getAction().contentEquals(ACTION_GET_ORDERS)) {
                 adapter.clear();
                 List<OrderItem> orders = intent.getExtras().getParcelableArrayList("orders");
                 if(orders != null) {
                     adapter.addAll(orders);
                 }
-            }
-            else if(intent.getAction().contentEquals(ACTION_TAG_DATA)) {
-                String id = intent.getStringExtra("tagId");
-                String text = intent.getStringExtra("tagText");
-                Log.i("LegoSupply", "Tag data received: (id:" + id + ", text:" + text + ")");
             }
         }
     };
