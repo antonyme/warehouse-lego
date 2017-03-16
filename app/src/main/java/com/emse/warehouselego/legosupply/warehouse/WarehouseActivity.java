@@ -1,12 +1,17 @@
 package com.emse.warehouselego.legosupply.warehouse;
 
 import android.app.ListActivity;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.IsoDep;
+import android.nfc.tech.NdefFormatable;
+import android.nfc.tech.NfcA;
+import android.nfc.tech.NfcV;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -36,15 +41,20 @@ import retrofit2.Response;
 
 public class WarehouseActivity extends ListActivity {
     Context context;
+    public static final String TAG = "Warehouse";
     public static final String ACTION_GET_ORDERS = "orders.get";
     public static final String ACTION_TAG_DATA = "tag.data";
     WarehouseAdapter adapter;
     TextView headerTxt;
+    NfcAdapter nfcAdapter;
+    PendingIntent pendingIntent;
+    IntentFilter[] intentFiltersArray;
+    String[][] techListsArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("LegoSupply", "Hello Warehouse");
+        Log.i(getResources().getString(R.string.app_name) + TAG, "Hello Warehouse");
         context = this;
         //set view
         setContentView(R.layout.activity_warehouse);
@@ -56,19 +66,38 @@ public class WarehouseActivity extends ListActivity {
         //set adapteur
         adapter = new WarehouseAdapter(this, new ArrayList<OrderItem>());
         setListAdapter(adapter);
-
         // schedule a task to update order list
         ScheduledExecutorService getOrderScheduler = Executors.newScheduledThreadPool(2);
         getOrderScheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {getOrders();}
         }, 0, 5, TimeUnit.SECONDS);
+        //set NFC
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if(nfcAdapter == null || !nfcAdapter.isEnabled()) {
+            Log.e(getResources().getString(R.string.app_name) + TAG,
+                    "No NFC Adapter found");
+        }
+
+        Intent intent = new Intent(this, getClass());
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        try {
+            ndef.addDataType("text/plain");
+        } catch (IntentFilter.MalformedMimeTypeException e) {
+            e.printStackTrace();
+        }
+        //Use no intent filters to accept all MIME types
+        intentFiltersArray = new IntentFilter[]{ndef};
+        // The tech list array can be set to null to accept all types of tag
+        techListsArray = new String[][]{new String[]{NfcV.class.getName()}};
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
+        Log.i(TAG, "OK");
         if (intent != null) {
             Parcelable[] rawMessages =
                     intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
@@ -77,12 +106,13 @@ public class WarehouseActivity extends ListActivity {
                 String id = NFCUtil.bytesToHex(tag.getId());
                 String text = NFCUtil.readTag(rawMessages);
                 if(text != null) {
-                    Log.i("LegoSupply", "Read tag: (id:" + id + ", text:" + text.substring(3) + ")");
+                    Log.i(getResources().getString(R.string.app_name) + TAG,
+                            "Read tag: (id:" + id + ", text:" + text.substring(3) + ")");
                     sendStockOut(new StockEntry(id, text.substring(3)));
                 }
             }
             else {
-                Log.e("LegoSupply", "Read tag: no tag data");
+                Log.e(getResources().getString(R.string.app_name) + TAG, "Read tag: no tag data");
             }
         }
     }
@@ -90,18 +120,19 @@ public class WarehouseActivity extends ListActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_GET_ORDERS);
         filter.addAction(ACTION_TAG_DATA);
-
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filter);
+
+        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        nfcAdapter.disableForegroundDispatch(this);
     }
 
     private void getOrders() {
@@ -130,7 +161,8 @@ public class WarehouseActivity extends ListActivity {
             }
             @Override
             public void onFailure(Call<List<ClientOrder>> call, Throwable t) {
-                Log.e("LegoSupply", "getOrders failed: " + t.getMessage());
+                Log.e(getResources().getString(R.string.app_name) + TAG,
+                        "getOrders failed: " + t.getMessage());
             }
         });
     }
@@ -138,12 +170,14 @@ public class WarehouseActivity extends ListActivity {
     private void sendStockOut(StockEntry stockEntry) {
         ServerService serverService = ServerService.retrofit.create(ServerService.class);
         final Call<Void> call = serverService.stockOut(stockEntry);
-        Log.i("LegoSupply", "Send stockOut " + stockEntry.toString());
+        Log.i(getResources().getString(R.string.app_name) + TAG,
+                "Send stockOut " + stockEntry.toString());
 
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.i("LegoSupply", "stockOut -> " + String.valueOf(response.code()));
+                Log.i(getResources().getString(R.string.app_name) + TAG,
+                        "stockOut -> " + String.valueOf(response.code()));
                 CharSequence text;
                 switch (response.code()) {
                     case 200:
@@ -165,7 +199,8 @@ public class WarehouseActivity extends ListActivity {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("LegoSupply", "sendStockOut failed: " + t.getMessage());
+                Log.e(getResources().getString(R.string.app_name) + TAG,
+                        "sendStockOut failed: " + t.getMessage());
             }
         });
     }
