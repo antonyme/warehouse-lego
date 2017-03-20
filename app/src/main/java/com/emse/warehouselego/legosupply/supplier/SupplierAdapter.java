@@ -1,4 +1,4 @@
-package com.emse.warehouselego.legosupply.warehouse;
+package com.emse.warehouselego.legosupply.supplier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -14,12 +14,12 @@ import com.emse.warehouselego.legosupply.server.model.StockGroup;
 
 import java.util.ArrayList;
 
-class WarehouseAdapter extends ArrayAdapter<StockGroup> {
+class SupplierAdapter extends ArrayAdapter<StockGroup> {
     private final Context context;
     private final ArrayList<StockGroup> values;
 
-    WarehouseAdapter(Context context, ArrayList<StockGroup> values) {
-        super(context, R.layout.wr_row, values);
+    SupplierAdapter(Context context, ArrayList<StockGroup> values) {
+        super(context, R.layout.sp_row, values);
         this.context = context;
         this.values = values;
     }
@@ -29,10 +29,10 @@ class WarehouseAdapter extends ArrayAdapter<StockGroup> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.wr_row, parent, false);
-        ImageView image = (ImageView) rowView.findViewById(R.id.wr_icon);
-        TextView title = (TextView) rowView.findViewById(R.id.wr_title);
-        TextView quantity = (TextView) rowView.findViewById(R.id.wr_quantity);
+        View rowView = inflater.inflate(R.layout.sp_row, parent, false);
+        ImageView image = (ImageView) rowView.findViewById(R.id.sp_icon);
+        TextView title = (TextView) rowView.findViewById(R.id.sp_title);
+        TextView quantity = (TextView) rowView.findViewById(R.id.sp_quantity);
         title.setText(values.get(position).getColor());
         quantity.setText(context.getResources().getString(R.string.order_quantity,
                 values.get(position).getQuantity()));

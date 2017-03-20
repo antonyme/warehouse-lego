@@ -4,8 +4,8 @@ import java.util.List;
 
 public class ClientOrder {
     private String clientName;
-    private List<OrderItem> toPrepare;
-    private List<OrderItem> prepared;
+    private List<StockGroup> toPrepare;
+    private List<StockGroup> prepared;
 
     public String getClientName() {
         return clientName;
@@ -15,19 +15,19 @@ public class ClientOrder {
         this.clientName = clientName;
     }
 
-    public List<OrderItem> getToPrepare() {
+    public List<StockGroup> getToPrepare() {
         return toPrepare;
     }
 
-    public void setToPrepare(List<OrderItem> toPrepare) {
+    public void setToPrepare(List<StockGroup> toPrepare) {
         this.toPrepare = toPrepare;
     }
 
-    public List<OrderItem> getPrepared() {
+    public List<StockGroup> getPrepared() {
         return prepared;
     }
 
-    public void setPrepared(List<OrderItem> prepared) {
+    public void setPrepared(List<StockGroup> prepared) {
         this.prepared = prepared;
     }
 }

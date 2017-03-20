@@ -1,6 +1,9 @@
 package com.emse.warehouselego.legosupply.server.model;
 
-public class StockEntry {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class StockEntry implements Parcelable {
     @Override
     public String toString() {
         return "StockEntry{" +
@@ -32,4 +35,33 @@ public class StockEntry {
     public void setColor(String color) {
         this.color = color;
     }
+
+    protected StockEntry(Parcel in) {
+        id = in.readString();
+        color = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(color);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<StockEntry> CREATOR = new Parcelable.Creator<StockEntry>() {
+        @Override
+        public StockEntry createFromParcel(Parcel in) {
+            return new StockEntry(in);
+        }
+
+        @Override
+        public StockEntry[] newArray(int size) {
+            return new StockEntry[size];
+        }
+    };
 }

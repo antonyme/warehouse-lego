@@ -24,4 +24,11 @@
         android:text="Warehouse"
         android:layout_below="@+id/clientBtn"
         android:layout_centerHorizontal="true" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/supplierBtn"
+        android:text="Supplier"
+        android:layout_below="@+id/warehouseBtn"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

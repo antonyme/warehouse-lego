@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.emse.warehouselego.legosupply.supplier.SupplierActivity;
 import com.emse.warehouselego.legosupply.warehouse.WarehouseActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, WarehouseActivity.class));
+            }
+        });
+        Button supplierButton = (Button) findViewById(R.id.supplierBtn);
+        supplierButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, SupplierActivity.class));
             }
         });
     }

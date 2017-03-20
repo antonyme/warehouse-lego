@@ -20,6 +20,12 @@ public interface ServerService {
     @POST("stockOut")
     Call<Void> stockOut(@Body StockEntry stockEntry);
 
+    @POST("stockIn")
+    Call<Void> stockIn(@Body StockEntry stockEntry);
+
+    @GET("stock")
+    Call<List<StockEntry>> stock();
+
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://lego-server.herokuapp.com/")
             .addConverterFactory(GsonConverterFactory.create())

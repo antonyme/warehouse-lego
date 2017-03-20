@@ -4,12 +4,12 @@
     android:layout_height="fill_parent">
 
     <TextView
-        android:id="@+id/wr_header_txt"
+        android:id="@+id/sp_header_txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:padding="20dp"
-        android:text="@string/empty_order_list"
+        android:text="@string/stock_list"
         android:textAllCaps="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/cardview_light_background" />

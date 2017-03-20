@@ -3,7 +3,7 @@ package com.emse.warehouselego.legosupply.server.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class OrderItem implements Parcelable {
+public class StockGroup implements Parcelable {
     String color;
     Integer quantity;
 
@@ -23,8 +23,12 @@ public class OrderItem implements Parcelable {
         this.quantity = quantity;
     }
 
+    public StockGroup(String color, Integer quantity) {
+        this.color = color;
+        this.quantity = quantity;
+    }
 
-    protected OrderItem(Parcel in) {
+    protected StockGroup(Parcel in) {
         color = in.readString();
         quantity = in.readByte() == 0x00 ? null : in.readInt();
     }
@@ -46,15 +50,15 @@ public class OrderItem implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<OrderItem> CREATOR = new Parcelable.Creator<OrderItem>() {
+    public static final Parcelable.Creator<StockGroup> CREATOR = new Parcelable.Creator<StockGroup>() {
         @Override
-        public OrderItem createFromParcel(Parcel in) {
-            return new OrderItem(in);
+        public StockGroup createFromParcel(Parcel in) {
+            return new StockGroup(in);
         }
 
         @Override
-        public OrderItem[] newArray(int size) {
-            return new OrderItem[size];
+        public StockGroup[] newArray(int size) {
+            return new StockGroup[size];
         }
     };
 }
