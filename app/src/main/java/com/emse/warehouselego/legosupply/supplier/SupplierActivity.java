@@ -46,6 +46,7 @@ public class SupplierActivity extends ListActivity {
     PendingIntent pendingIntent;
     IntentFilter[] intentFiltersArray;
     String[][] techListsArray;
+    private ScheduledExecutorService getStockScheduler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class SupplierActivity extends ListActivity {
         adapter = new SupplierAdapter(this, new ArrayList<StockGroup>());
         setListAdapter(adapter);
         // schedule a task to update stock list
-        ScheduledExecutorService getStockScheduler = Executors.newScheduledThreadPool(2);
+        getStockScheduler = Executors.newScheduledThreadPool(2);
         getStockScheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -101,7 +102,7 @@ public class SupplierActivity extends ListActivity {
                 String text = NFCUtil.readTag(rawMessages);
                 if(text != null) {
                     Log.i(logTag, "Read tag: (id:" + id + ", text:" + text.substring(3) + ")");
-                    sendStockOut(new StockEntry(id, text.substring(3)));
+                    sendStockIn(new StockEntry(id, text.substring(3)));
                 }
             }
             else {
@@ -118,6 +119,7 @@ public class SupplierActivity extends ListActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filter);
 
         nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
+        Log.i(logTag, "resume");
     }
 
     @Override
@@ -125,6 +127,14 @@ public class SupplierActivity extends ListActivity {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         nfcAdapter.disableForegroundDispatch(this);
+        Log.i(logTag, "pause");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getStockScheduler.shutdown();
+        Log.i(logTag, "destroy");
     }
 
     private void getStock() {
@@ -157,7 +167,7 @@ public class SupplierActivity extends ListActivity {
         });
     }
 
-    private void sendStockOut(StockEntry stockEntry) {
+    private void sendStockIn(StockEntry stockEntry) {
         ServerService serverService = ServerService.retrofit.create(ServerService.class);
         final Call<Void> call = serverService.stockIn(stockEntry);
         Log.i(logTag, "Send stockIn " + stockEntry.toString());
@@ -165,7 +175,7 @@ public class SupplierActivity extends ListActivity {
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.i(logTag, "stockOut -> " + String.valueOf(response.code()));
+                Log.i(logTag, "stockIn -> " + String.valueOf(response.code()));
                 CharSequence text;
                 switch (response.code()) {
                     case 200:

@@ -36,6 +36,10 @@ class SupplierAdapter extends ArrayAdapter<StockGroup> {
         title.setText(values.get(position).getColor());
         quantity.setText(context.getResources().getString(R.string.order_quantity,
                 values.get(position).getQuantity()));
+        int imageID = context.getResources()
+                .getIdentifier("ic_lego_" + values.get(position).getColor(), "mipmap",
+                        context.getPackageName());
+        image.setImageResource(imageID);
 
         return rowView;
     }

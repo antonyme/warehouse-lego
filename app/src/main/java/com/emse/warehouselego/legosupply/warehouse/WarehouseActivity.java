@@ -46,6 +46,7 @@ public class WarehouseActivity extends ListActivity {
     PendingIntent pendingIntent;
     IntentFilter[] intentFiltersArray;
     String[][] techListsArray;
+    private ScheduledExecutorService getOrderScheduler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class WarehouseActivity extends ListActivity {
         adapter = new WarehouseAdapter(this, new ArrayList<StockGroup>());
         setListAdapter(adapter);
         // schedule a task to update order list
-        ScheduledExecutorService getOrderScheduler = Executors.newScheduledThreadPool(2);
+        getOrderScheduler = Executors.newScheduledThreadPool(2);
         getOrderScheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {getOrders();}
@@ -85,9 +86,7 @@ public class WarehouseActivity extends ListActivity {
         } catch (IntentFilter.MalformedMimeTypeException e) {
             e.printStackTrace();
         }
-        //Use no intent filters to accept all MIME types
         intentFiltersArray = new IntentFilter[]{ndef};
-        // The tech list array can be set to null to accept all types of tag
         techListsArray = new String[][]{new String[]{NfcV.class.getName()}};
     }
 
@@ -121,6 +120,7 @@ public class WarehouseActivity extends ListActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filter);
 
         nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
+        Log.i(logTag, "resume");
     }
 
     @Override
@@ -128,6 +128,14 @@ public class WarehouseActivity extends ListActivity {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         nfcAdapter.disableForegroundDispatch(this);
+        Log.i(logTag, "pause");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getOrderScheduler.shutdown();
+        Log.i(logTag, "destroy");
     }
 
     private void getOrders() {
