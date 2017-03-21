@@ -1,22 +1,18 @@
 <resources>
     <string name="app_name">LegoSupply</string>
 
-    <string-array name="products_array">
-        <item>Bleu</item>
-        <item>Rouge</item>
-        <item>Jaune</item>
-        <item>Vert</item>
-        <item>Noir</item>
-        <item>Blanc</item>
-    </string-array>
-    <string name="title_activity_warehouse">Warehouse</string>
+    <string name="title_activity_warehouse">Entrepôt</string>
     <string name="empty_order_list">Pas de commande pour l\'instant…</string>
     <string name="order_list">Commande pour %1$s</string>
     <string name="product_type">LEGO</string>
-    <string name="order_quantity">Nb: %1$d</string>
+    <string name="order_quantity">(stock:%1$d)</string>
     <string name="preview">Aperçu du produit</string>
 
-    <string name="title_activity_supplier">Supplier</string>
-    <string name="empty_stock_list">Le stock est vide...</string>
+    <string name="title_activity_supplier">Fournisseur</string>
+    <string name="empty_stock_list">Le stock est vide…</string>
     <string name="stock_list">État du stock</string>
+
+    <string name="title_activity_client">Client</string>
+    <string name="empty_disponibility_list">Pas de produit disponible…</string>
+    <string name="client_order_create">Création de commande</string>
 </resources>

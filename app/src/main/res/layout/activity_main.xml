@@ -14,21 +14,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/clientBtn"
-        android:text="Client"
+        android:text="@string/title_activity_client"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/warehouseBtn"
-        android:text="Warehouse"
+        android:text="@string/title_activity_warehouse"
         android:layout_below="@+id/clientBtn"
         android:layout_centerHorizontal="true" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/supplierBtn"
-        android:text="Supplier"
+        android:text="@string/title_activity_supplier"
         android:layout_below="@+id/warehouseBtn"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

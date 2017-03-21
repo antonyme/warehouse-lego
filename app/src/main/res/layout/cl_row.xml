@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/cl_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/preview" />
+
+    <TextView
+        android:id="@+id/cl_title_LEGO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/product_type"
+        android:layout_marginEnd="10dp"
+        android:textSize="20sp"
+        android:layout_alignTop="@+id/cl_icon"
+        android:layout_toEndOf="@+id/cl_icon"/>
+
+
+    <TextView
+        android:id="@+id/cl_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@+id/label"
+        android:textSize="20sp"
+        tools:text="title"
+        android:layout_alignTop="@+id/cl_icon"
+        android:layout_toEndOf="@+id/cl_title_LEGO"/>
+
+    <TextView
+        android:id="@+id/cl_stock_qty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        tools:text="100"
+        android:layout_alignBaseline="@+id/cl_title"
+        android:layout_alignBottom="@+id/cl_title"
+        android:layout_toEndOf="@+id/cl_title"
+        android:layout_marginStart="11dp" />
+
+    <TextView
+        android:id="@+id/cl_order_qty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorAccent"
+        android:layout_marginEnd="12dp"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/imageButton" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:src="@android:drawable/ic_input_add" />
+
+</RelativeLayout>

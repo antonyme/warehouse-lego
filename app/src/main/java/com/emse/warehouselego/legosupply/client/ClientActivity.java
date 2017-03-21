@@ -1,17 +1,13 @@
-package com.emse.warehouselego.legosupply.supplier;
+package com.emse.warehouselego.legosupply.client;
 
 import android.app.ListActivity;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.nfc.NfcAdapter;
-import android.nfc.Tag;
-import android.nfc.tech.NfcV;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +15,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.emse.warehouselego.legosupply.NFCUtil;
 import com.emse.warehouselego.legosupply.R;
 import com.emse.warehouselego.legosupply.Util;
 import com.emse.warehouselego.legosupply.server.ServerService;
-import com.emse.warehouselego.legosupply.server.model.StockGroup;
+import com.emse.warehouselego.legosupply.server.model.ClientOrder;
+import com.emse.warehouselego.legosupply.server.model.OrderGroup;
 import com.emse.warehouselego.legosupply.server.model.StockEntry;
+import com.emse.warehouselego.legosupply.server.model.StockGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +33,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SupplierActivity extends ListActivity {
+public class ClientActivity extends ListActivity {
     Context context;
     String logTag;
-    public static final String ACTION_GET_ORDERS = "orders.get";
-    SupplierAdapter adapter;
+    public static final String ACTION_GET_STOCK = "stock.get";
+    ClientAdapter adapter;
     TextView headerTxt;
-    NfcAdapter nfcAdapter;
-    PendingIntent pendingIntent;
-    IntentFilter[] intentFiltersArray;
-    String[][] techListsArray;
     private ScheduledExecutorService getStockScheduler;
 
     @Override
@@ -53,17 +46,17 @@ public class SupplierActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         logTag = getResources().getString(R.string.app_name) + "/"
                 + getResources().getString(R.string.title_activity_supplier);
-        Log.i(logTag, "Hello Supplier");
+        Log.i(logTag, "Hello Client");
         context = this;
         //set view
-        setContentView(R.layout.activity_supplier);
+        setContentView(R.layout.activity_client);
         ListView lv = getListView();
         LayoutInflater inflater = getLayoutInflater();
         View header = inflater.inflate(R.layout.sp_header, lv, false);
         lv.addHeaderView(header, null, false);
         headerTxt = (TextView) findViewById(R.id.sp_header_txt);
         //set adapteur
-        adapter = new SupplierAdapter(this, new ArrayList<StockGroup>());
+        adapter = new ClientAdapter(this, new ArrayList<OrderGroup>());
         setListAdapter(adapter);
         // schedule a task to update stock list
         getStockScheduler = Executors.newScheduledThreadPool(2);
@@ -72,53 +65,14 @@ public class SupplierActivity extends ListActivity {
             public void run() {
                 getStock();}
         }, 0, 5, TimeUnit.SECONDS);
-        //set NFC
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if(nfcAdapter == null || !nfcAdapter.isEnabled()) {
-            Log.e(logTag, "No NFC Adapter found");
-        }
-        Intent intent = new Intent(this, getClass());
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        try {
-            ndef.addDataType("text/plain");
-        } catch (IntentFilter.MalformedMimeTypeException e) {
-            e.printStackTrace();
-        }
-        intentFiltersArray = new IntentFilter[]{ndef};
-        techListsArray = new String[][]{new String[]{NfcV.class.getName()}};
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (intent != null) {
-            Parcelable[] rawMessages =
-                    intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            if(rawMessages != null && tag != null) {
-                String id = NFCUtil.bytesToHex(tag.getId());
-                String text = NFCUtil.readTag(rawMessages);
-                if(text != null) {
-                    Log.i(logTag, "Read tag: (id:" + id + ", text:" + text.substring(3) + ")");
-                    sendStockIn(new StockEntry(id, text.substring(3)));
-                }
-            }
-            else {
-                Log.e(logTag, "Read tag: no tag data");
-            }
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_GET_ORDERS);
+        filter.addAction(ACTION_GET_STOCK);
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filter);
-
-        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
         Log.i(logTag, "resume");
     }
 
@@ -126,7 +80,6 @@ public class SupplierActivity extends ListActivity {
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        nfcAdapter.disableForegroundDispatch(this);
         Log.i(logTag, "pause");
     }
 
@@ -154,7 +107,7 @@ public class SupplierActivity extends ListActivity {
                     }
                 }
 
-                Intent intent = new Intent(ACTION_GET_ORDERS);
+                Intent intent = new Intent(ACTION_GET_STOCK);
                 intent.putParcelableArrayListExtra("stockGroups",
                         (ArrayList<? extends Parcelable>) stockGroups);
 
@@ -167,23 +120,23 @@ public class SupplierActivity extends ListActivity {
         });
     }
 
-    private void sendStockIn(StockEntry stockEntry) {
+    private void sendNewClientOrder(List<StockGroup> stockGroups) {
         ServerService serverService = ServerService.retrofit.create(ServerService.class);
-        final Call<Void> call = serverService.stockIn(stockEntry);
-        Log.i(logTag, "Send stockIn " + stockEntry.toString());
+        ClientOrder clientOrder = new ClientOrder();
+        clientOrder.setClientName("");
+        clientOrder.setToPrepare(stockGroups);
+        final Call<Void> call = serverService.newClientOrder(clientOrder);
+        Log.i(logTag, "Send newClientOrder " + clientOrder.toString());
 
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.i(logTag, "stockIn -> " + String.valueOf(response.code()));
+                Log.i(logTag, "newClientOrder -> " + String.valueOf(response.code()));
                 CharSequence text;
                 switch (response.code()) {
                     case 200:
-                        text = "OK! Inventaire mis à jour!";
+                        text = "OK! Commande reçu!";
                         getStock();
-                        break;
-                    case 201:
-                        text = "Ce LEGO a déjà été ajouté!";
                         break;
                     default:
                         text = "Oups, petit pb de connexion, réessaye";
@@ -194,7 +147,7 @@ public class SupplierActivity extends ListActivity {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Log.e(logTag, "sendStockIn failed: " + t.getMessage());
+                Log.e(logTag, "newClientOrder failed: " + t.getMessage());
             }
         });
     }
@@ -203,11 +156,10 @@ public class SupplierActivity extends ListActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().contentEquals(ACTION_GET_ORDERS)) {
-                adapter.clear();
+            if(intent.getAction().contentEquals(ACTION_GET_STOCK)) {
                 List<StockGroup> stockGroups = intent.getExtras().getParcelableArrayList("stockGroups");
                 if(stockGroups != null) {
-                    adapter.addAll(stockGroups);
+                    adapter.updateStock(stockGroups);
                 }
             }
         }

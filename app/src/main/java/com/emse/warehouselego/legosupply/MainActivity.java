@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.emse.warehouselego.legosupply.client.ClientActivity;
 import com.emse.warehouselego.legosupply.supplier.SupplierActivity;
 import com.emse.warehouselego.legosupply.warehouse.WarehouseActivity;
 

@@ -24,13 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ClientActivity" />
-        <activity android:name=".CommandesActivity" />
         <activity
             android:name=".warehouse.WarehouseActivity"
             android:label="@string/title_activity_warehouse"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".supplier.SupplierActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".supplier.SupplierActivity" />
+        <activity android:name=".client.ClientActivity"></activity>
     </application>
 
 </manifest>

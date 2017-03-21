@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class StockGroup implements Parcelable {
-    String color;
-    Integer quantity;
+    private String color;
+    private Integer quantity;
 
     public String getColor() {
         return color;

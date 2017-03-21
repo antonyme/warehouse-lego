@@ -17,6 +17,9 @@ public interface ServerService {
     @GET("clientOrders")
     Call<List<ClientOrder>> clientOrders();
 
+    @POST("newClientOrder")
+    Call<Void> newClientOrder(@Body ClientOrder clientOrder);
+
     @POST("stockOut")
     Call<Void> stockOut(@Body StockEntry stockEntry);
 
