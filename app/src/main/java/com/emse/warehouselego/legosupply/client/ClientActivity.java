@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +46,7 @@ public class ClientActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         logTag = getResources().getString(R.string.app_name) + "/"
-                + getResources().getString(R.string.title_activity_supplier);
+                + getResources().getString(R.string.title_activity_client);
         Log.i(logTag, "Hello Client");
         context = this;
         //set view

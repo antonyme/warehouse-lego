@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,14 +32,16 @@ class ClientAdapter extends ArrayAdapter<OrderGroup> {
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.cl_row, parent, false);
-        ImageView image = (ImageView) rowView.findViewById(R.id.cl_icon);
         TextView title = (TextView) rowView.findViewById(R.id.cl_title);
         TextView stockQty = (TextView) rowView.findViewById(R.id.cl_stock_qty);
         TextView orderQty = (TextView) rowView.findViewById(R.id.cl_order_qty);
+        ImageView image = (ImageView) rowView.findViewById(R.id.cl_icon);
+        ImageButton button = (ImageButton) rowView.findViewById(R.id.cl_add);
+
         title.setText(values.get(position).getColor());
         stockQty.setText(context.getResources().getString(R.string.order_quantity,
                 values.get(position).getStock()));
@@ -46,6 +50,13 @@ class ClientAdapter extends ArrayAdapter<OrderGroup> {
                 .getIdentifier("ic_lego_" + values.get(position).getColor(), "mipmap",
                         context.getPackageName());
         image.setImageResource(imageID);
+        button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                values.get(position).setQuantity(values.get(position).getQuantity() + 1);
+                notifyDataSetChanged();
+            }
+        });
 
         return rowView;
     }
