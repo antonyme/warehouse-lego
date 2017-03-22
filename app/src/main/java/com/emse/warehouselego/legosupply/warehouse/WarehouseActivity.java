@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
@@ -12,6 +13,7 @@ import android.nfc.tech.NfcV;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +77,16 @@ public class WarehouseActivity extends ListActivity {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(nfcAdapter == null || !nfcAdapter.isEnabled()) {
             Log.e(logTag, "No NFC Adapter found");
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.nfc_off)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setIcon(R.drawable.ic_nfc)
+                    .show();
         }
 
         Intent intent = new Intent(this, getClass());
@@ -181,17 +193,17 @@ public class WarehouseActivity extends ListActivity {
                 CharSequence text;
                 switch (response.code()) {
                     case 200:
-                        text = "OK! Inventaire et commande mis à jour!";
+                        text = getString(R.string.stock_out_ok);
                         getOrders();
                         break;
                     case 201:
-                        text = "Ce LEGO n'est pas utile à la commande, repose le!";
+                        text = getString(R.string.stock_out_not_useful);
                         break;
                     case 202:
-                        text = "Heu... Ce LEGO ne devrait pas être là, non?";
+                        text = getString(R.string.stock_out_unknown);
                         break;
                     default:
-                        text = "Oups, petit pb de connexion, réessaye";
+                        text = getString(R.string.connection_error);
                 }
                 Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                 toast.show();

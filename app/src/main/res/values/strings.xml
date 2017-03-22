@@ -11,19 +11,30 @@
     <string name="product_type">LEGO</string>
     <string name="order_quantity">(stock:%1$d)</string>
     <string name="preview">Aperçu du produit</string>
+    <string name="stock_out_ok">OK! Inventaire et commande mis à jour!</string>
+    <string name="stock_out_not_useful">Ce LEGO n\'est pas utile à la commande, repose le!</string>
+    <string name="stock_out_unknown">Heu… Ce LEGO ne devrait pas être là, non?</string>
 
     <string name="title_activity_supplier">Fournisseur</string>
     <string name="empty_stock_list">Le stock est vide…</string>
     <string name="stock_list">État du stock</string>
+    <string name="stock_in_ok">OK! Inventaire mis à jour!</string>
+    <string name="stock_in_exists">Ce LEGO a déjà été ajouté!</string>
 
     <string name="title_activity_client">Client</string>
     <string name="empty_disponibility_list">Pas de produit disponible…</string>
     <string name="order_title">Ma commande (%1$s)</string>
     <string name="client_order_create">Création de commande</string>
+    <string name="order_received">OK! Commande reçu!</string>
+    <string name="order_refused">Commande refusée!</string>
 
     <string-array name="roles">
         <item>@string/title_activity_client</item>
         <item>@string/title_activity_warehouse</item>
         <item>@string/title_activity_supplier</item>
     </string-array>
+    <string name="connection_error">Oups, petit pb de connexion, réessaye</string>
+    <string name="ok">Valider</string>
+    <string name="error">Erreur</string>
+    <string name="nfc_off">NFC désactivé</string>
 </resources>

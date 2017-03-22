@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
@@ -12,6 +13,7 @@ import android.nfc.tech.NfcV;
 import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +77,16 @@ public class SupplierActivity extends ListActivity {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(nfcAdapter == null || !nfcAdapter.isEnabled()) {
             Log.e(logTag, "No NFC Adapter found");
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.nfc_off)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setIcon(R.drawable.ic_nfc)
+                    .show();
         }
         Intent intent = new Intent(this, getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -179,14 +191,14 @@ public class SupplierActivity extends ListActivity {
                 CharSequence text;
                 switch (response.code()) {
                     case 200:
-                        text = "OK! Inventaire mis à jour!";
+                        text = getString(R.string.stock_in_ok);
                         getStock();
                         break;
                     case 201:
-                        text = "Ce LEGO a déjà été ajouté!";
+                        text = getString(R.string.stock_in_exists);
                         break;
                     default:
-                        text = "Oups, petit pb de connexion, réessaye";
+                        text = getString(R.string.connection_error);
                 }
                 Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                 toast.show();

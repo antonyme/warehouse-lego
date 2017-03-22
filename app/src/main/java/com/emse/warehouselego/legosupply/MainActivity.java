@@ -1,12 +1,10 @@
 package com.emse.warehouselego.legosupply;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,7 +18,6 @@ import com.emse.warehouselego.legosupply.warehouse.WarehouseActivity;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private Integer chosenRole = 0;
-    private Spinner spinner;
     private EditText clientName;
     private Button startBtn;
 
@@ -30,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
 
-        spinner = (Spinner) findViewById(R.id.ma_spinner);
+        Spinner spinner = (Spinner) findViewById(R.id.ma_spinner);
         clientName = (EditText) findViewById(R.id.ma_client_name);
         startBtn = (Button) findViewById(R.id.ma_start);
 

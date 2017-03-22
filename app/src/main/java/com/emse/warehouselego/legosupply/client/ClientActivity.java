@@ -147,15 +147,15 @@ public class ClientActivity extends ListActivity {
                 CharSequence text;
                 switch (response.code()) {
                     case 200:
-                        text = "OK! Commande reçu!";
+                        text = getString(R.string.order_received);
                         adapter.resetQuantities();
                         getStock();
                         break;
                     case 201:
-                        text = "Commande refusée!";
+                        text = getString(R.string.order_refused);
                         getStock();
                     default:
-                        text = "Oups, petit pb de connexion, réessaye";
+                        text = getString(R.string.connection_error);
                 }
                 Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                 toast.show();
