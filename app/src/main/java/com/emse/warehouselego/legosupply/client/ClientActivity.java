@@ -41,6 +41,7 @@ public class ClientActivity extends ListActivity {
     public static final String ACTION_GET_STOCK = "stock.get";
     ClientAdapter adapter;
     TextView headerTxt;
+    String clientName;
     private ScheduledExecutorService getStockScheduler;
 
     @Override
@@ -50,6 +51,7 @@ public class ClientActivity extends ListActivity {
                 + getResources().getString(R.string.title_activity_client);
         Log.i(logTag, "Hello Client");
         context = this;
+        clientName = getIntent().getStringExtra("clientName");
         //set view
         setContentView(R.layout.activity_client);
         ListView lv = getListView();
@@ -109,7 +111,7 @@ public class ClientActivity extends ListActivity {
                 List<StockGroup> stockGroups = new ArrayList<>();
                 if(response.isSuccessful()) {
                     if(response.body().size()>0) {
-                        headerTxt.setText(R.string.order_title);
+                        headerTxt.setText(getResources().getString(R.string.order_title, clientName));
                         stockGroups = response.body();
                     }
                     else {
@@ -133,7 +135,7 @@ public class ClientActivity extends ListActivity {
     private void sendNewClientOrder(List<StockGroup> stockGroups) {
         ServerService serverService = ServerService.retrofit.create(ServerService.class);
         ClientOrder clientOrder = new ClientOrder();
-        clientOrder.setClientName("phil");
+        clientOrder.setClientName(clientName);
         clientOrder.setToPrepare(stockGroups);
         final Call<Void> call = serverService.newClientOrder(clientOrder);
         Log.i(logTag, "Send newClientOrder " + clientOrder.toString());

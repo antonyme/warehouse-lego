@@ -146,6 +146,7 @@ public class SupplierActivity extends ListActivity {
                 List<StockGroup> stockGroups = new ArrayList<>();
                 if(response.isSuccessful()) {
                     if(response.body().size()>0) {
+                        headerTxt.setText(R.string.stock_list);
                         stockGroups = response.body();
                     }
                     else {

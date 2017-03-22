@@ -18,7 +18,7 @@
 
     <string name="title_activity_client">Client</string>
     <string name="empty_disponibility_list">Pas de produit disponible…</string>
-    <string name="order_title">Ma commande</string>
+    <string name="order_title">Ma commande (%1$s)</string>
     <string name="client_order_create">Création de commande</string>
 
     <string-array name="roles">
