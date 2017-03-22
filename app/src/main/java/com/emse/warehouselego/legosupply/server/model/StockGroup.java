@@ -28,6 +28,11 @@ public class StockGroup implements Parcelable {
         this.quantity = quantity;
     }
 
+    public StockGroup(OrderGroup orderGroup) {
+        this.color = orderGroup.getColor();
+        this.quantity = orderGroup.getQuantity();
+    }
+
     protected StockGroup(Parcel in) {
         color = in.readString();
         quantity = in.readByte() == 0x00 ? null : in.readInt();

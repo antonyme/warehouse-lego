@@ -19,28 +19,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/product_type"
-        android:layout_marginEnd="10dp"
-        android:textSize="30sp"
-        android:layout_alignTop="@+id/sp_icon"
-        android:layout_toEndOf="@+id/sp_icon"/>
+        android:textSize="20sp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/sp_icon" />
 
 
     <TextView
         android:id="@+id/sp_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/sp_title_LEGO"
         android:text="@+id/label"
-        android:textSize="30sp"
-        tools:text="title"
-        android:layout_alignTop="@+id/sp_icon"
-        android:layout_toEndOf="@+id/sp_title_LEGO"/>
+        android:textSize="20sp"
+        tools:text="title" />
 
     <TextView
         android:id="@+id/sp_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="20dp"
+        android:textSize="20sp" />
 
 </RelativeLayout>

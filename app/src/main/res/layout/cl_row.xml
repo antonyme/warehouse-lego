@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:text="@string/product_type"
         android:layout_marginEnd="10dp"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:layout_alignTop="@+id/cl_icon"
         android:layout_toEndOf="@+id/cl_icon"/>
 
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@+id/label"
-        android:textSize="20sp"
+        android:textSize="15sp"
         tools:text="title"
         android:layout_alignTop="@+id/cl_icon"
         android:layout_toEndOf="@+id/cl_title_LEGO"/>
@@ -40,7 +40,7 @@
         android:id="@+id/cl_stock_qty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="15sp"
         tools:text="100"
         android:layout_alignBaseline="@+id/cl_title"
         android:layout_alignBottom="@+id/cl_title"

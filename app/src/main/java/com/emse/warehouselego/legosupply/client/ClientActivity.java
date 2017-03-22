@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,9 +54,16 @@ public class ClientActivity extends ListActivity {
         setContentView(R.layout.activity_client);
         ListView lv = getListView();
         LayoutInflater inflater = getLayoutInflater();
-        View header = inflater.inflate(R.layout.sp_header, lv, false);
+        View header = inflater.inflate(R.layout.cl_header, lv, false);
         lv.addHeaderView(header, null, false);
-        headerTxt = (TextView) findViewById(R.id.sp_header_txt);
+        headerTxt = (TextView) findViewById(R.id.cl_header_txt);
+        ImageButton headerBuy = (ImageButton) findViewById(R.id.cl_buy);
+        headerBuy.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                sendNewClientOrder(adapter.getOrder());
+            }
+        });
         //set adapteur
         adapter = new ClientAdapter(this, new ArrayList<OrderGroup>());
         setListAdapter(adapter);
@@ -93,15 +101,16 @@ public class ClientActivity extends ListActivity {
 
     private void getStock() {
         ServerService serverService = ServerService.retrofit.create(ServerService.class);
-        final Call<List<StockEntry>> call = serverService.stock();
+        final Call<List<StockGroup>> call = serverService.stockGroups();
 
-        call.enqueue(new Callback<List<StockEntry>>() {
+        call.enqueue(new Callback<List<StockGroup>>() {
             @Override
-            public void onResponse(Call<List<StockEntry>> call, Response<List<StockEntry>> response) {
+            public void onResponse(Call<List<StockGroup>> call, Response<List<StockGroup>> response) {
                 List<StockGroup> stockGroups = new ArrayList<>();
                 if(response.isSuccessful()) {
                     if(response.body().size()>0) {
-                        stockGroups = Util.stockEntriesToGroup(response.body());
+                        headerTxt.setText(R.string.order_title);
+                        stockGroups = response.body();
                     }
                     else {
                         headerTxt.setText(R.string.empty_stock_list);
@@ -115,7 +124,7 @@ public class ClientActivity extends ListActivity {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
             @Override
-            public void onFailure(Call<List<StockEntry>> call, Throwable t) {
+            public void onFailure(Call<List<StockGroup>> call, Throwable t) {
                 Log.e(logTag, "getStock failed: " + t.getMessage());
             }
         });
@@ -124,7 +133,7 @@ public class ClientActivity extends ListActivity {
     private void sendNewClientOrder(List<StockGroup> stockGroups) {
         ServerService serverService = ServerService.retrofit.create(ServerService.class);
         ClientOrder clientOrder = new ClientOrder();
-        clientOrder.setClientName("");
+        clientOrder.setClientName("phil");
         clientOrder.setToPrepare(stockGroups);
         final Call<Void> call = serverService.newClientOrder(clientOrder);
         Log.i(logTag, "Send newClientOrder " + clientOrder.toString());
@@ -137,8 +146,12 @@ public class ClientActivity extends ListActivity {
                 switch (response.code()) {
                     case 200:
                         text = "OK! Commande reçu!";
+                        adapter.resetQuantities();
                         getStock();
                         break;
+                    case 201:
+                        text = "Commande refusée!";
+                        getStock();
                     default:
                         text = "Oups, petit pb de connexion, réessaye";
                 }

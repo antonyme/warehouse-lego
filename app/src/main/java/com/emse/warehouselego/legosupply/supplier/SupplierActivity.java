@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.emse.warehouselego.legosupply.NFCUtil;
 import com.emse.warehouselego.legosupply.R;
-import com.emse.warehouselego.legosupply.Util;
 import com.emse.warehouselego.legosupply.server.ServerService;
 import com.emse.warehouselego.legosupply.server.model.StockGroup;
 import com.emse.warehouselego.legosupply.server.model.StockEntry;
@@ -39,7 +38,7 @@ import retrofit2.Response;
 public class SupplierActivity extends ListActivity {
     Context context;
     String logTag;
-    public static final String ACTION_GET_ORDERS = "orders.get";
+    public static final String ACTION_GET_STOCK = "stock.get";
     SupplierAdapter adapter;
     TextView headerTxt;
     NfcAdapter nfcAdapter;
@@ -115,7 +114,7 @@ public class SupplierActivity extends ListActivity {
     protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_GET_ORDERS);
+        filter.addAction(ACTION_GET_STOCK);
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filter);
 
         nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, techListsArray);
@@ -139,29 +138,29 @@ public class SupplierActivity extends ListActivity {
 
     private void getStock() {
         ServerService serverService = ServerService.retrofit.create(ServerService.class);
-        final Call<List<StockEntry>> call = serverService.stock();
+        final Call<List<StockGroup>> call = serverService.stockGroups();
 
-        call.enqueue(new Callback<List<StockEntry>>() {
+        call.enqueue(new Callback<List<StockGroup>>() {
             @Override
-            public void onResponse(Call<List<StockEntry>> call, Response<List<StockEntry>> response) {
+            public void onResponse(Call<List<StockGroup>> call, Response<List<StockGroup>> response) {
                 List<StockGroup> stockGroups = new ArrayList<>();
                 if(response.isSuccessful()) {
                     if(response.body().size()>0) {
-                        stockGroups = Util.stockEntriesToGroup(response.body());
+                        stockGroups = response.body();
                     }
                     else {
                         headerTxt.setText(R.string.empty_stock_list);
                     }
                 }
 
-                Intent intent = new Intent(ACTION_GET_ORDERS);
+                Intent intent = new Intent(ACTION_GET_STOCK);
                 intent.putParcelableArrayListExtra("stockGroups",
                         (ArrayList<? extends Parcelable>) stockGroups);
 
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
             @Override
-            public void onFailure(Call<List<StockEntry>> call, Throwable t) {
+            public void onFailure(Call<List<StockGroup>> call, Throwable t) {
                 Log.e(logTag, "getStock failed: " + t.getMessage());
             }
         });
@@ -203,7 +202,7 @@ public class SupplierActivity extends ListActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().contentEquals(ACTION_GET_ORDERS)) {
+            if(intent.getAction().contentEquals(ACTION_GET_STOCK)) {
                 adapter.clear();
                 List<StockGroup> stockGroups = intent.getExtras().getParcelableArrayList("stockGroups");
                 if(stockGroups != null) {

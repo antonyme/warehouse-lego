@@ -6,14 +6,6 @@ import android.os.Parcelable;
 public class OrderGroup extends StockGroup implements Parcelable {
     Integer stock;
 
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
     public OrderGroup(String color, Integer quantity, Integer stock) {
         super(color,quantity);
         this.stock = stock;
@@ -22,6 +14,27 @@ public class OrderGroup extends StockGroup implements Parcelable {
     protected OrderGroup(Parcel in) {
         super(in);
         stock = in.readByte() == 0x00 ? null : in.readInt();
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+        if(getQuantity() > stock) {
+            setQuantity(stock);
+        }
+    }
+
+    @Override
+    public void setQuantity(Integer quantity) {
+        if(quantity > stock) {
+            super.setQuantity(stock);
+        }
+        else {
+            super.setQuantity(quantity);
+        }
     }
 
     @Override

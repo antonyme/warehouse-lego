@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">LegoSupply</string>
+    <string name="title_activity_main">Accueil</string>
+    <string name="choose_a_role">Choisis ton rôle dans la Supply Chain :</string>
+    <string name="client_name">Nom de client</string>
+    <string name="start">C\'est parti!</string>
 
     <string name="title_activity_warehouse">Entrepôt</string>
     <string name="empty_order_list">Pas de commande pour l\'instant…</string>
@@ -14,5 +18,12 @@
 
     <string name="title_activity_client">Client</string>
     <string name="empty_disponibility_list">Pas de produit disponible…</string>
+    <string name="order_title">Ma commande</string>
     <string name="client_order_create">Création de commande</string>
+
+    <string-array name="roles">
+        <item>@string/title_activity_client</item>
+        <item>@string/title_activity_warehouse</item>
+        <item>@string/title_activity_supplier</item>
+    </string-array>
 </resources>

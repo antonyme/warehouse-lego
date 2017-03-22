@@ -3,6 +3,7 @@ package com.emse.warehouselego.legosupply.server;
 
 import com.emse.warehouselego.legosupply.server.model.ClientOrder;
 import com.emse.warehouselego.legosupply.server.model.StockEntry;
+import com.emse.warehouselego.legosupply.server.model.StockGroup;
 
 import java.util.List;
 
@@ -28,6 +29,9 @@ public interface ServerService {
 
     @GET("stock")
     Call<List<StockEntry>> stock();
+
+    @GET("stockGroups")
+    Call<List<StockGroup>> stockGroups();
 
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://lego-server.herokuapp.com/")

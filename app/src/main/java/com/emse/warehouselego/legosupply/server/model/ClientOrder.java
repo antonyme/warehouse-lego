@@ -1,11 +1,17 @@
 package com.emse.warehouselego.legosupply.server.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientOrder {
     private String clientName;
     private List<StockGroup> toPrepare;
     private List<StockGroup> prepared;
+
+    public ClientOrder() {
+        prepared = new ArrayList<>();
+        toPrepare = new ArrayList<>();
+    }
 
     public String getClientName() {
         return clientName;

@@ -10,25 +10,52 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.emse.warehouselego.legosupply.MainActivity">
 
-    <Button
+    <TextView
+        android:id="@+id/ma_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/clientBtn"
-        android:text="@string/title_activity_client"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-    <Button
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp"
+        android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display3" />
+
+    <TextView
+        android:id="@+id/ma_choose_role"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/warehouseBtn"
-        android:text="@string/title_activity_warehouse"
-        android:layout_below="@+id/clientBtn"
-        android:layout_centerHorizontal="true" />
-    <Button
+        android:layout_below="@+id/ma_title"
+        android:layout_marginTop="22dp"
+        android:text="@string/choose_a_role"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="30sp"
+        android:textStyle="italic" />
+
+    <Spinner
+        android:id="@+id/ma_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/ma_choose_role"
+        android:layout_margin="40dp" />
+
+    <EditText
+        android:id="@+id/ma_client_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/supplierBtn"
-        android:text="@string/title_activity_supplier"
-        android:layout_below="@+id/warehouseBtn"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/ma_spinner"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="@string/client_name"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/ma_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="42dp"
+        android:text="@string/start" />
 </RelativeLayout>

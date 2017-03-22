@@ -18,6 +18,7 @@ import com.emse.warehouselego.legosupply.server.model.StockGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 class ClientAdapter extends ArrayAdapter<OrderGroup> {
@@ -53,7 +54,8 @@ class ClientAdapter extends ArrayAdapter<OrderGroup> {
         button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                values.get(position).setQuantity(values.get(position).getQuantity() + 1);
+                OrderGroup toUpdate = values.get(position);
+                toUpdate.setQuantity(toUpdate.getQuantity() + 1);
                 notifyDataSetChanged();
             }
         });
@@ -61,17 +63,16 @@ class ClientAdapter extends ArrayAdapter<OrderGroup> {
         return rowView;
     }
 
-    public void updateStock(List<StockGroup> stock) {
-        for(OrderGroup orderGroup : values) {
+    void updateStock(List<StockGroup> stock) {
+        for(Iterator<OrderGroup> iterator = values.iterator(); iterator.hasNext();) {
+            OrderGroup orderGroup = iterator.next();
             if(!findAndUpdate(orderGroup, stock)) {
-                values.remove(orderGroup);
-                Log.i("LegoSupply/Adapter", "Removed: " + orderGroup.getColor());
+                iterator.remove();
             }
         }
         for(StockGroup stockGroup :  stock) {
             OrderGroup orderGroup = new OrderGroup(stockGroup.getColor(), 0, stockGroup.getQuantity());
             values.add(orderGroup);
-            Log.i("LegoSupply/Adapter", "Added: " + orderGroup.getColor());
         }
         notifyDataSetChanged();
     }
@@ -85,5 +86,21 @@ class ClientAdapter extends ArrayAdapter<OrderGroup> {
             }
         }
         return false;
+    }
+
+    ArrayList<StockGroup> getOrder() {
+        ArrayList<StockGroup> res = new ArrayList<>();
+        for(OrderGroup orderGroup : values) {
+            if(orderGroup.getQuantity() != 0) {
+                    res.add(new StockGroup(orderGroup));
+            }
+        }
+        return res;
+    }
+
+    void resetQuantities() {
+        for(OrderGroup orderGroup : values) {
+            orderGroup.setQuantity(0);
+        }
     }
 }
