@@ -12,6 +12,6 @@
         android:text="@string/empty_order_list"
         android:textAllCaps="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textColor="@color/cardview_light_background" />
+        android:textColor="@android:color/background_light" />
 
 </LinearLayout>

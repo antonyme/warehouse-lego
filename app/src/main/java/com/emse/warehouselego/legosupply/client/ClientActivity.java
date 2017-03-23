@@ -11,18 +11,15 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.emse.warehouselego.legosupply.R;
-import com.emse.warehouselego.legosupply.Util;
 import com.emse.warehouselego.legosupply.server.ServerService;
 import com.emse.warehouselego.legosupply.server.model.ClientOrder;
 import com.emse.warehouselego.legosupply.server.model.OrderGroup;
-import com.emse.warehouselego.legosupply.server.model.StockEntry;
 import com.emse.warehouselego.legosupply.server.model.StockGroup;
 
 import java.util.ArrayList;
@@ -43,6 +40,7 @@ public class ClientActivity extends ListActivity {
     TextView headerTxt;
     String clientName;
     private ScheduledExecutorService getStockScheduler;
+    private ImageButton headerBuy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +61,9 @@ public class ClientActivity extends ListActivity {
         headerBuy.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                sendNewClientOrder(adapter.getOrder());
+                if(adapter.getOrder().size() != 0) {
+                    sendNewClientOrder(adapter.getOrder());
+                }
             }
         });
         //set adapteur
@@ -149,6 +149,7 @@ public class ClientActivity extends ListActivity {
                     case 200:
                         text = getString(R.string.order_received);
                         adapter.resetQuantities();
+
                         getStock();
                         break;
                     case 201:

@@ -2,12 +2,10 @@ package com.emse.warehouselego.legosupply.client;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +15,6 @@ import com.emse.warehouselego.legosupply.server.model.OrderGroup;
 import com.emse.warehouselego.legosupply.server.model.StockGroup;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 

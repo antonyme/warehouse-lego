@@ -15,6 +15,9 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface ServerService {
+    @GET("init")
+    Call<Void> init();
+
     @GET("clientOrders")
     Call<List<ClientOrder>> clientOrders();
 

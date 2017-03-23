@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LegoSupply</string>
+    <string name="choose_a_role">Choose your role in the Supply Chain</string>
+    <string name="client_name">Name of the client</string>
+    <string name="connection_error">Oops, connexion error</string>
+    <string name="empty_disponibility_list">No product available...</string>
+    <string name="empty_order_list">No order for the moment</string>
+    <string name="empty_stock_list">The stock is empty...</string>
+    <string name="error">Error</string>
+    <string name="nfc_off">NFC disabled</string>
+    <string name="ok">OK</string>
+    <string name="order_list">Order for %1$s</string>
+    <string name="order_quantity">(stock:%1$d)</string>
+    <string name="order_received">OK! Order received!</string>
+    <string name="order_refused">Order refused!</string>
+    <string name="order_title">My order (%1$s)</string>
+    <string name="preview">Product preview</string>
+    <string name="product_type">LEGO</string>
+    <string name="start">Let\'s go!</string>
+    <string name="stock_in_exists">This LEGO has already been added!</string>
+    <string name="stock_in_ok">OK! Inventory updated!</string>
+    <string name="stock_list">Stock state</string>
+    <string name="stock_out_not_useful">This LEGO is useless for the order, put it down!</string>
+    <string name="stock_out_ok">OK! Inventory and order updated!</string>
+    <string name="stock_out_unknown">Hum... This LEGO shouldn\'t be here, right?</string>
+    <string name="title_activity_client">Client</string>
+    <string name="title_activity_main">Main</string>
+    <string name="title_activity_supplier">Supplier</string>
+    <string name="title_activity_warehouse">Warehouse</string>
+    <string name="action_delete_all">Delete all</string>
+    <string name="server_init">Ok! Server initialized</string>
+</resources>
